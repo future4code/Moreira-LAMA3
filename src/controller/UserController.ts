@@ -2,28 +2,32 @@ import { Request, Response } from "express";
 import { UserBusiness } from "../business/UserBusiness";
 import { SignupInputDTO } from "../types/signupInputDTO";
 
-const userBusiness = new UserBusiness
+//const userBusiness = new UserBusiness
 
-export class UserContoller{
+export class UserController{
+  constructor(private userBusiness: UserBusiness) {}
 
-    create = async (req:Request, res:Response):Promise< any >=>{
+    createUser = async (req:Request, res:Response): Promise<string | undefined>=>{
 
         try {
             //entrada da requisição
-            const {name, email, password} = req.body
+            const {name, email, password, role} = req.body
 
             const input: SignupInputDTO ={
                 name,
                 email,
-                password
+                password,
+                role
             }
             
-            const token = await userBusiness.create(input) //acessando UserBusiness e passando o Body
+            const token: string = await this.userBusiness.create(input) //acessando UserBusiness e passando o Body
 
             //responder a requisição
             res.status(201).send({
                 message:"Usuário cadastrado com sucesso!",
                 token: token })
+        
+        return token 
 
         } catch(error: any){ 
 

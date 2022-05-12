@@ -1,9 +1,12 @@
-import { BaseDatabase } from "./BaseDatabase"
+import { BaseDatabase } from "./BaseDatabase";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const printError = (error: any) => { console.log(error.sqlMessage || error.message) }
+console.log(BaseDatabase.connection.client.config);
 
-export class CreateTables extends BaseDatabase{
-   createTables = () => this.connection.raw(`
+const createTables = () => BaseDatabase.connection.raw(`
    CREATE TABLE IF NOT EXISTS BANDAS (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL,
@@ -28,13 +31,11 @@ export class CreateTables extends BaseDatabase{
     role VARCHAR(255) NOT NULL DEFAULT "NORMAL"
   );
    `)
-   .then(() => { console.log("Tables created successfully!!") })
+   .then(() => { console.log("Tabelas criadas") })
    .catch(printError)
-
-   closeConnection = () => { this.connection.destroy() }
-
-}
-const migrations = new CreateTables()
-
-migrations.createTables()
-   .finally(migrations.closeConnection)
+   
+   
+   const closeConnection = () => { BaseDatabase.connection.destroy() }
+   
+   createTables()
+     .finally(closeConnection) 

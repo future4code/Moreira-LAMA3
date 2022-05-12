@@ -1,14 +1,26 @@
-import { User } from "../types/userType";
+import { FindByEmailResponse, User } from "../types/userType";
 import { BaseDatabase } from "./BaseDatabase";
 
 
 export class UserDatabase extends BaseDatabase {
+  protected TABLE_NAME = "USUARIOS"
 
-    create = async(user:User)=>{
-
-        //queries para consultar/inserir no banco de dados
-        await this.connection.raw(``)
-
-
-    }    
+  create =  async (user: User) => {
+    try{
+      await BaseDatabase.connection(this.TABLE_NAME).insert(user)
+    } catch(error: any){
+      throw new Error(error.sqlMessage || error.message)
+    }
+  }
+    
+    findUserByEmail = async (email: string)=>{
+      try {
+          const user : FindByEmailResponse= await BaseDatabase.connection(this.TABLE_NAME)
+          .select()
+          .where({ email })
+      return user[0];
+      } catch (error: any) {
+        throw new Error(error.sqlMessage || error.message);
+      }
+    }
 }

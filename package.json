@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "migrations": "tsnd ./src/data/migrations.ts",
+    "migrations": "tsnd ./src/data/migration.ts",
     "dev": "ts-node-dev ./src/index.ts",
     "start": "node ./build/index.js",
     "postinstall": "tsc",

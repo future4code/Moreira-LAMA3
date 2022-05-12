@@ -1,13 +1,13 @@
-enum TypeUser {
+export enum USER_ROLES {
     ADMIN = "ADMIN",
-    USER = "USER"
+    NORMAL = "NORMAL"
 }
 
 export type User = {
-    name:string
-	email:string
-	password:string
-	role:TypeUser
+  name: string
+	email: string
+	password: string
+	role?: USER_ROLES
 }
 
 export type login = {
@@ -15,4 +15,11 @@ export type login = {
 	password:string
 }
 	
-	
+
+export type FindByEmailResponse = {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  role?: USER_ROLES;
+}[];
