@@ -23,3 +23,9 @@ export type FindByEmailResponse = {
   password: string;
   role?: USER_ROLES;
 }[];
+
+
+export type LoginInputDTO = {
+  email: string
+  password: string
+}

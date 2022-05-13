@@ -4,6 +4,7 @@ import { Authenticator } from "../services/Authenticator"
 import { HashManager } from "../services/HashManager"
 import { Idgenerator } from "../services/IdGenerator"
 import { SignupInputDTO } from "../types/signupInputDTO"
+import { LoginInputDTO } from "../types/userType"
 
 
 
@@ -14,7 +15,7 @@ export class UserBusiness{
     create = async (input:SignupInputDTO)=>{
 
         //validacao do body
-        const {name, email, password} = input
+        const {name, email, password, role} = input
 
         if(!email || !name || !password){
             throw new Error("Fill in all data")
@@ -50,15 +51,42 @@ export class UserBusiness{
 
         //criar o usuario no banco
 
-        const user = {id, name, email, password: hashPassword}
+        const user = {id, name, email, password: hashPassword, role}
 
         await this.userDatabase.create(user)
         
 
         //criar o token
         const authenticator = new Authenticator         
-        const token = authenticator.generateToken({id}) 
+        const token = authenticator.generateToken({role ,id }) 
 
         return token
+    }
+
+    login = async (input: LoginInputDTO) => {
+      const { email, password } = input;
+  
+      if(!email || !password ){
+        throw new Error("Preencha todos os dados 'email', 'password'");
+      }
+  
+      const userDatabase = new UserDatabase();
+      const user = await userDatabase.findUserByEmail(email);
+        if(!user){
+          throw new Error("Email não está cadastrado")
+        }
+  
+      const hashManager = new HashManager();
+      const pass = hashManager.compare(password, user.password)
+  
+      if(!pass){
+        throw new Error("Email ou senha incorreto")
+      }
+  
+  
+      const authenticator = new Authenticator         
+      const token = authenticator.generateToken({id: user.id})
+
+      return token
     }
 }
