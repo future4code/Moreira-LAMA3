@@ -16,9 +16,24 @@ export class UserDatabase extends BaseDatabase {
     findUserByEmail = async (email: string)=>{
       try {
           const user : FindByEmailResponse= await BaseDatabase.connection(this.TABLE_NAME)
-          .select()
+          .select('*')
           .where({ email })
       return user[0];
+      } catch (error: any) {
+        throw new Error(error.sqlMessage || error.message);
+      }
+    }
+
+    findUserById = async (id: string)=>{
+      try {
+          const userRole = await BaseDatabase.connection.raw(`
+          SELECT role FROM USUARIOS 
+          WHERE id='${id}'
+          `)
+
+          console.log(userRole[0][0].role)
+      return userRole[0][0].role;
+
       } catch (error: any) {
         throw new Error(error.sqlMessage || error.message);
       }

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { UserBusiness } from "../business/UserBusiness";
 import { SignupInputDTO } from "../types/signupInputDTO";
-
+import { LoginInputDTO } from "../types/userType";
+import { UserBusiness } from "../business/UserBusiness";
 //const userBusiness = new UserBusiness
 
 export class UserController{
@@ -49,4 +49,22 @@ export class UserController{
           
         }
     }
+
+    login = async (req: Request, res: Response) => {
+
+      const {email, password } = req.body;
+  
+          const input: LoginInputDTO = {
+            email, 
+            password
+          }
+    try{
+          const token = await this.userBusiness.login(input)
+          console.log(token)
+    
+        res.status(200).send({message:'User logado com sucesso',token})
+    } catch(err: any){ 
+        res.status(400).send({message: err.message  || err.sqlMessage });
+    }
+  }
 }
