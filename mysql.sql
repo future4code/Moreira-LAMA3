@@ -27,3 +27,7 @@ select * from USUARIOS;
 SELECT role FROM USUARIOS ;
 
 select * from BANDAS;
+
+select * from SHOWS;
+
+SELECT name, music_genre, week_day  FROM SHOWS  JOIN BANDAS ON SHOWS.band_id = BANDAS.id WHERE week_day = 'SEXTA';

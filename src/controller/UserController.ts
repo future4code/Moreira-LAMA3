@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { SignupInputDTO } from "../types/signupInputDTO";
 import { LoginInputDTO } from "../types/userType";
 import { UserBusiness } from "../business/UserBusiness";
-//const userBusiness = new UserBusiness
 
 export class UserController{
   constructor(private userBusiness: UserBusiness) {}
@@ -10,7 +9,7 @@ export class UserController{
     createUser = async (req:Request, res:Response): Promise<string | undefined>=>{
 
         try {
-            //entrada da requisição
+
             const {name, email, password, role} = req.body
 
             const input: SignupInputDTO ={
@@ -20,9 +19,8 @@ export class UserController{
                 role
             }
             
-            const token: string = await this.userBusiness.create(input) //acessando UserBusiness e passando o Body
+            const token: string = await this.userBusiness.create(input) 
 
-            //responder a requisição
             res.status(201).send({
                 message:"Usuário cadastrado com sucesso!",
                 token: token })
