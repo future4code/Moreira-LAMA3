@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { BandaInputDTO } from "../types/bandaInputDTO";
 import { BandaBusiness } from "../business/BandaBusiness";
-import { Authenticator } from "../services/Authenticator";
 
 export class BandaController{
   constructor(private bandaBusiness: BandaBusiness) {}
@@ -11,10 +10,6 @@ export class BandaController{
         try {
           const token = req.headers.authorization as string
 
-          
-
-
-            //entrada da requisição
             const {name, music_genre, responsible} = req.body
 
             const input: BandaInputDTO ={
@@ -23,9 +18,8 @@ export class BandaController{
               responsible,
             }
             
-            await this.bandaBusiness.createBanda(input, token) //acessando UserBusiness e passando o Body
+            await this.bandaBusiness.createBanda(input, token) 
 
-            //responder a requisição
             res.status(201).send({message:"Banda cadastrado com sucesso!"})
         
         return token 
@@ -33,10 +27,10 @@ export class BandaController{
         } catch(error: any){ 
 
           switch(error.message){
-            case "conta não encontrada!":
-              res.status(404).send(error.message)
+            case "você não é autorizado a cadastrar uma banda":
+              res.status(401).send(error.message)
             break 
-            case "usuário já existente!":
+            case "banda já existente!":
               res.status(409).send(error.message)
             break
             case "Todos os dados precisam ser preenchidos!":
@@ -49,5 +43,19 @@ export class BandaController{
           }
           
         }
+    }
+
+    getBanda = async (req: Request, res: Response) =>{
+      try{
+        const idBanda = req.params
+
+        const banda = await this.bandaBusiness.getBanda(idBanda.id)
+
+        res.status(200).send({banda})
+
+      }catch(error: any){
+        res.status(400).send({message: error.message  || error.sqlMessage });
+
+      }
     }
 }
